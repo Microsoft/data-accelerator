@@ -32,6 +32,7 @@ package object sink {
   case class OutputOperator(name: String,
                             onInitialization: (SparkSession) => Unit,
                             onBatch: (SparkSession, Timestamp, Set[String]) => Unit,
-                            output: (DataFrame, Timestamp) => Map[String, Int])
+                            output: (DataFrame, Timestamp) => Map[String, Int],
+                            sinkNames: Seq[String])
 }
 

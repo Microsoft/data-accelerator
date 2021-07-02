@@ -107,7 +107,7 @@ SOFTWARE
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.11</artifactId>
-            <version>2.2.6</version>
+            <version>3.0.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -170,10 +170,22 @@ SOFTWARE
             <artifactId>azure-sqldb-spark</artifactId>
             <version>1.0.2</version>
 		    </dependency>
-		    <dependency>
+        <dependency>
             <groupId>com.databricks</groupId>
             <artifactId>dbutils-api_2.11</artifactId>
             <version>0.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.holdenkarau</groupId>
+            <artifactId>spark-testing-base_2.11</artifactId>
+            <version>${spark.version}_0.11.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_2.11</artifactId>
+            <version>2.4.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
   <profiles>
@@ -236,11 +248,12 @@ SOFTWARE
           <plugin>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest-maven-plugin</artifactId>
-            <version>1.0</version>
+            <version>2.0.0</version>
             <configuration>
               <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
               <junitxml>.</junitxml>
               <filereports>WDF TestSuite.txt</filereports>
+              <argLine>-Xmx512m</argLine>
             </configuration>
             <executions>
               <execution>

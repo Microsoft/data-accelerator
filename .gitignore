@@ -12,3 +12,4 @@ npm-debug.log
 /Tests/ScenarioTester/ScenarioTester/obj
 /Tests/ScenarioTester/ScenarioTesterTests/bin
 /Tests/ScenarioTester/ScenarioTesterTests/obj
+/DataProcessing/datax-host/metastore_db

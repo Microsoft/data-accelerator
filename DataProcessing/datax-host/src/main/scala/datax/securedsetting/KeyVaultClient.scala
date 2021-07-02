@@ -12,16 +12,15 @@ import org.apache.log4j.LogManager
 import com.databricks.dbutils_v1.DBUtilsHolder.dbutils
 import scala.collection.mutable
 
-
 /***
   * Utility module to access KeyVault service from Azure.
   */
 object KeyVaultClient {
   private val logger = LogManager.getLogger(this.getClass)
-  private val secretRegex = "^(keyvault|secretscope):\\/\\/([a-zA-Z0-9-_]+)\\/([a-zA-Z0-9-_]+)$".r
-
   private val kvc = KeyVaultMsiAuthenticatorClient.getKeyVaultClient()
   private val cache = new mutable.HashMap[String, String]
+
+  val secretRegex = "^(keyvault|secretscope):\\/\\/([a-zA-Z0-9-_]+)\\/([a-zA-Z0-9-_]+)$".r
 
   /**
     * get value of a matched secretId from keyvault

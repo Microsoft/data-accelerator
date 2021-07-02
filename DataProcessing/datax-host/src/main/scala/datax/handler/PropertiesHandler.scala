@@ -19,7 +19,7 @@ object PropertiesHandler {
   val logger = LogManager.getLogger(this.getClass)
   val SettingPropertyToAppend = "appendproperty"
 
-  def buildAppendProperties(dict: SettingDictionary, prefix: String):Map[String, String] = {
+  private def buildAppendProperties(dict: SettingDictionary, prefix: String):Map[String, String] = {
     dict.getSubDictionary(prefix).getDictMap()
   }
 

@@ -72,6 +72,8 @@ object OutputManager {
     val onInitHandlers = sinkOperators.map(_._5).filter(_!=null)
     var shouldGeneratorProcessedSchema = processedSchemaPath!=null && !processedSchemaPath.isEmpty
 
+
+
     OutputOperator(
       name = name,
       onInitialization = if(onInitHandlers.size>0) (spark: SparkSession)=> for (elem <- onInitHandlers) {elem(spark)} else null,
@@ -96,7 +98,8 @@ object OutputManager {
         outputLogger.warn(s"Output fields: ${outputColumnNames.mkString(",")}")
 
         sink(name, df, outputColumnNames, partitionTime, flagColumns, sinkers)
-      }
+      },
+      sinkNames =  sinkOperators.map(o=>(o._1)).toSeq
     )
   }
 

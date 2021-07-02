@@ -21,7 +21,7 @@ object PreProjectionHandler {
       dict.get(SettingPreProjection).orNull)
   }
 
-  def loadProcessor(spark:SparkSession, dict: SettingDictionary, processorName: String, className: String) = {
+  private def loadProcessor(spark:SparkSession, dict: SettingDictionary, processorName: String, className: String) = {
     if(className==null||className.isEmpty){
       logger.warn(s"no preprojection processor is defined")
       null

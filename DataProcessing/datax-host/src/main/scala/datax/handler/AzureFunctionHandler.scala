@@ -10,6 +10,8 @@ import datax.securedsetting.KeyVaultClient
 import datax.utility.AzureFunctionCaller
 import org.apache.log4j.LogManager
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.expressions.UserDefinedFunction
+import scala.collection.mutable.ArrayBuffer
 
 object AzureFunctionHandler {
 
@@ -40,19 +42,20 @@ object AzureFunctionHandler {
   }
 
   def initialize(spark: SparkSession, dict: SettingDictionary) = {
+    var funcs = ArrayBuffer[UserDefinedFunction]()
     val azFuncs = buildAzureFunctionConfArray(dict, SettingNamespace.JobProcessPrefix + SettingAzureFunction + SettingNamespace.Seperator)
     for (azFunc <- azFuncs) {
       val azFuncAccessCode = azFunc.code
       azFunc.params.length match {
-        case 0 => spark.udf.register(azFunc.name, () => AzureFunctionCaller.call(azFunc.serviceEndpoint, azFunc.api, azFuncAccessCode, azFunc.methodType, null))
-        case 1 => spark.udf.register(azFunc.name, (s: String) => AzureFunctionCaller.call(azFunc.serviceEndpoint, azFunc.api, azFuncAccessCode, azFunc.methodType, Map(
+        case 0 => funcs += spark.udf.register(azFunc.name, () => AzureFunctionCaller.call(azFunc.serviceEndpoint, azFunc.api, azFuncAccessCode, azFunc.methodType, null))
+        case 1 => funcs += spark.udf.register(azFunc.name, (s: String) => AzureFunctionCaller.call(azFunc.serviceEndpoint, azFunc.api, azFuncAccessCode, azFunc.methodType, Map(
           azFunc.params(0) -> s
         )))
-        case 2 => spark.udf.register(azFunc.name, (s1: String, s2: String) => AzureFunctionCaller.call(azFunc.serviceEndpoint, azFunc.api, azFuncAccessCode, azFunc.methodType, Map(
+        case 2 => funcs += spark.udf.register(azFunc.name, (s1: String, s2: String) => AzureFunctionCaller.call(azFunc.serviceEndpoint, azFunc.api, azFuncAccessCode, azFunc.methodType, Map(
           azFunc.params(0) -> s1,
           azFunc.params(1) -> s2
         )))
-        case 3 => spark.udf.register(azFunc.name, (s1: String, s2: String, s3: String) => AzureFunctionCaller.call(azFunc.serviceEndpoint, azFunc.api, azFuncAccessCode, azFunc.methodType, Map(
+        case 3 => funcs += spark.udf.register(azFunc.name, (s1: String, s2: String, s3: String) => AzureFunctionCaller.call(azFunc.serviceEndpoint, azFunc.api, azFuncAccessCode, azFunc.methodType, Map(
           azFunc.params(0) -> s1,
           azFunc.params(1) -> s2,
           azFunc.params(2) -> s3
@@ -61,6 +64,7 @@ object AzureFunctionHandler {
         case _ => throw new EngineException("AzureFunction with more than 3 input parameters are currently not supported. Please contact datax dev team for adding support if needed.")
       }
     }
+    funcs
   }
 }
 
